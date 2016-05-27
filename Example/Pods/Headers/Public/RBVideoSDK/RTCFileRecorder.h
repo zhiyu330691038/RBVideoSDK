@@ -1,0 +1,1 @@
+../../../../../RBVideoSDK/Classes/public/RTCFileRecorder.h

@@ -1,0 +1,1 @@
+../../../../../RBVideoSDK/Classes/media/RBVideoCredential.h

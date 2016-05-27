@@ -1,11 +1,6 @@
-use_frameworks!
 
 target 'RBVideoSDK_Example' do
   pod 'RBVideoSDK', :path => '../'
 
-  target 'RBVideoSDK_Tests' do
-    inherit! :search_paths
 
-    pod 'FBSnapshotTestCase'
-  end
 end
