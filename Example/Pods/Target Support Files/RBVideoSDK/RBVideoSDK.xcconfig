@@ -1,6 +1,0 @@
-GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/Private" "${PODS_ROOT}/Headers/Private/RBVideoSDK" "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/RBVideoSDK"
-LIBRARY_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/../../RBVideoSDK/Classes/lib" $(inherited) "${PODS_ROOT}/../../RBVideoSDK/Classes/lib" $(inherited) "${PODS_ROOT}/../../RBVideoSDK/Classes/lib" $(inherited) "${PODS_ROOT}/../../RBVideoSDK/Classes/lib" $(inherited) "${PODS_ROOT}/../../RBVideoSDK/Classes/lib" $(inherited) "${PODS_ROOT}/../../RBVideoSDK/Classes/lib" $(inherited) "${PODS_ROOT}/../../RBVideoSDK/Classes/lib" $(inherited) "${PODS_ROOT}/../../RBVideoSDK/Classes/lib"
-OTHER_LDFLAGS = -l"WebRTC-20160120-arm-intel-Release" -l"avcodec" -l"avformat" -l"avutil" -l"bz2" -l"c++" -l"fdk-aac" -l"iconv" -l"icucore" -l"swresample" -l"swscale" -l"x264" -l"z" -framework "AVFoundation" -framework "AVKit" -framework "AudioToolBox" -framework "CoreMedia" -framework "CoreVideo" -framework "GLKit" -framework "MapKit" -framework "MediaPlayer" -framework "MobileCoreServices" -framework "OpenGLES" -framework "SystemConfiguration" -framework "UIKit" -framework "VideoToolBox" -framework "WebKit"
-PODS_ROOT = ${SRCROOT}
-SKIP_INSTALL = YES

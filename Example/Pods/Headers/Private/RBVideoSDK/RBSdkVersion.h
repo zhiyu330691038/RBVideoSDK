@@ -1,1 +1,1 @@
-../../../../../RBVideoSDK/Classes/media/RBSdkVersion.h
+../../../../../RBVideoSDK/Classes/RBSdkVersion.h

@@ -1,1 +1,1 @@
-../../../../../RBVideoSDK/Classes/media/RBVideoCredential.h
+../../../../../RBVideoSDK/Classes/RBVideoCredential.h

@@ -1,1 +1,1 @@
-../../../../../RBVideoSDK/Classes/console/RBVideoInfoSession.h
+../../../../../RBVideoSDK/Classes/RBVideoInfoSession.h

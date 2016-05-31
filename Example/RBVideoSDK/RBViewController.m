@@ -288,31 +288,31 @@
 /* sdk */
 - (void)sdk {
     mClient = [[RBVideoClient alloc] init];
-//    mClient.delegate = self;
-//    RBVideoConfiguration * config = [[RBVideoConfiguration alloc] init];
-//    [mClient setConfigation:config];
-//    
-//    RBVideoAddress * address = [[RBVideoAddress alloc] init];
-//    address.urlString = @"wss://v3.roo.bo/ws";
-//    [mClient setConnectAddress:address];
-//    
-//    RBVideoCredential * videoCredential = [[RBVideoCredential alloc] init];
-//    videoCredential.token = _token;
-//    videoCredential.userId = _user;
-//    videoCredential.password = @"1";
-//    videoCredential.videoClientId = User_Pudding;
-//    videoCredential.appkey = @"appkey";
-//    videoCredential.appid = @"1234";
-//    [mClient setVideoCredential:videoCredential];
-//    [mClient begin];
-//    
-//    
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        UIView * view = [mClient getVideoView];
-//        view.frame = CGRectMake(100, 30, 300, 300);
-//        //        view.backgroundColor = [UIColor redColor];
-//        [self.view addSubview:view];
-//    });
+    mClient.delegate = self;
+    RBVideoConfiguration * config = [[RBVideoConfiguration alloc] init];
+    [mClient setConfigation:config];
+    
+    RBVideoAddress * address = [[RBVideoAddress alloc] init];
+    address.urlString = @"wss://v3.roo.bo/ws";
+    [mClient setConnectAddress:address];
+    
+    RBVideoCredential * videoCredential = [[RBVideoCredential alloc] init];
+    videoCredential.token = _token;
+    videoCredential.userId = _user;
+    videoCredential.password = @"1";
+    videoCredential.videoClientId = User_Pudding;
+    videoCredential.appkey = @"appkey";
+    videoCredential.appid = @"1234";
+    [mClient setVideoCredential:videoCredential];
+    [mClient begin];
+    
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        UIView * view = [mClient getVideoView];
+        view.frame = CGRectMake(100, 30, 300, 300);
+        //        view.backgroundColor = [UIColor redColor];
+        [self.view addSubview:view];
+    });
     
 }
 

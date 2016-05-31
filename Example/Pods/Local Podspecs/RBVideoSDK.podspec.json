@@ -2,7 +2,11 @@
   "name": "RBVideoSDK",
   "version": "0.1.0",
   "summary": "北京只能管家视频sdk.",
+  "platforms": {
+    "ios": "7.0"
+  },
   "description": "TODO: 北京只能管家视频sdk.",
+  "requires_arc": true,
   "homepage": "https://github.com/zhiyu330691038/RBVideoSDK",
   "license": {
     "type": "MIT",
@@ -15,16 +19,13 @@
     "git": "https://github.com/zhiyu330691038/RBVideoSDK.git",
     "tag": "0.1.0"
   },
-  "platforms": {
-    "ios": "7.0"
-  },
-  "source_files": "RBVideoSDK/Classes/**/*.{h,m*}",
+  "source_files": "RBVideoSDK/Classes/**/*",
   "resource_bundles": {
     "RBVideoSDK": [
       "RBVideoSDK/Assets/*.*"
     ]
   },
-  "vendored_libraries": "RBVideoSDK/Classes/lib/*",
+  "vendored_libraries": "RBVideoSDK/Assets/*.a",
   "libraries": [
     "icucore",
     "bz2",

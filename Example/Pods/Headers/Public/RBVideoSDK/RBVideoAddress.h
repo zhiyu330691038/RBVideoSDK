@@ -1,1 +1,1 @@
-../../../../../RBVideoSDK/Classes/media/RBVideoAddress.h
+../../../../../RBVideoSDK/Classes/RBVideoAddress.h

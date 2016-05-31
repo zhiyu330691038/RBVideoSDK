@@ -1,1 +1,1 @@
-../../../../../RBVideoSDK/Classes/media/RBVideoClient.h
+../../../../../RBVideoSDK/Classes/RBVideoClient.h
