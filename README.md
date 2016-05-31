@@ -27,3 +27,10 @@ zhikuiyu, zhikuiyu@roobo.com
 ## License
 
 RBVideoSDK is available under the MIT license. See the LICENSE file for more info.
+
+
+##alter
+
+RBVideoSDK shoule disable bitcode 
+
+

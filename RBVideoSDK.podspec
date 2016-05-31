@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.platform = :ios, "9.0"
 
   s.description      = <<-DESC
-TODO: 北京只能管家视频sdk.
+TODO: 北京智能管家视频sdk.
                        DESC
   s.requires_arc    = true
 
