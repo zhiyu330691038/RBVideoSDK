@@ -3,7 +3,7 @@
 Pod::Spec.new do |s|
   s.name             = 'RBVideoSDK'
   s.version          = '1.0.0'
-  s.summary          = '北京只能管家视频sdk.'
+  s.summary          = '北京智能管家视频sdk.'
 
   s.platform = :ios, "9.0"
 
