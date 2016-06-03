@@ -10,10 +10,10 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
 #import "RBVideoClient.h"
-@interface RBViewController ()
+#import "AssetsLibrary/AssetsLibrary.h"
+#import <AVFoundation/AVFoundation.h>
+@interface RBViewController ()<RBVideoEventDelegate>
 {
-
-    UIButton *_startButton;
     UIButton *_stopButton;
     UIButton *_bindButton;
     UIButton *_callButton;
@@ -27,6 +27,8 @@
     NSString *_user;
     NSString *_pass;
     NSString *_token;
+    UITextView * logLable;
+    
 }
 @end
 
@@ -74,25 +76,6 @@
                     action:@selector(callButton:)
           forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_callButton];
-    
-    _startButton = [[UIButton alloc] initWithFrame:CGRectZero];
-    _startButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    _startButton.backgroundColor = [UIColor blueColor];
-    _startButton.layer.cornerRadius = 5;
-    _startButton.clipsToBounds = YES;
-    _startButton.contentEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 10);
-    [_startButton setTitle:@"start"
-                  forState:UIControlStateNormal];
-    _startButton.titleLabel.font = controlFont;
-    [_startButton setTitleColor:[UIColor whiteColor]
-                       forState:UIControlStateNormal];
-    [_startButton setTitleColor:[UIColor lightGrayColor]
-                       forState:UIControlStateSelected];
-    [_startButton sizeToFit];
-    [_startButton addTarget:self
-                     action:@selector(startButton:)
-           forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_startButton];
     
     _stopButton = [[UIButton alloc] initWithFrame:CGRectZero];
     _stopButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -193,6 +176,13 @@
                  forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_luxiangButtonstop];
     
+    
+    
+    
+    logLable = [[UITextView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 300, self.view.frame.size.width, 300)];
+    logLable.userInteractionEnabled = NO;
+    [self.view addSubview:logLable];
+    
     CGRect connectFrame = CGRectMake(0, 10, 90, 40);
     connectFrame.origin.y =
     CGRectGetMaxY(connectFrame) - 10;
@@ -200,19 +190,14 @@
     
     connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 10;
     _callButton.frame = connectFrame;
-    
-    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 10;
-    _startButton.frame = connectFrame;
+
     
     connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 10;
     _stopButton.frame = connectFrame;
     
     connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 10;
     _closeButton.frame = connectFrame;
-    
-    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 10;
-    _closeButton.frame = connectFrame;
-    
+
     connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 10;
     _luxiangButton.frame = connectFrame;
     
@@ -287,23 +272,9 @@
 
 /* sdk */
 - (void)sdk {
-    mClient = [[RBVideoClient alloc] init];
+    mClient = [RBVideoClient getClient:_user Token:_token Psd:@"aa" APIKEY:@"apikey" APPID:@"1234" ServerURL:@"wss://v3.roo.bo/ws"];
     mClient.delegate = self;
-    RBVideoConfiguration * config = [[RBVideoConfiguration alloc] init];
-    [mClient setConfigation:config];
-    
-    RBVideoAddress * address = [[RBVideoAddress alloc] init];
-    address.urlString = @"wss://v3.roo.bo/ws";
-    [mClient setConnectAddress:address];
-    
-    RBVideoCredential * videoCredential = [[RBVideoCredential alloc] init];
-    videoCredential.token = _token;
-    videoCredential.userId = _user;
-    videoCredential.password = @"1";
-    videoCredential.videoClientId = User_Pudding;
-    videoCredential.appkey = @"appkey";
-    videoCredential.appid = @"1234";
-    [mClient setVideoCredential:videoCredential];
+
     [mClient begin];
     
     
@@ -330,14 +301,8 @@
     
 }
 
-
-
-- (void)startButton:(UITapGestureRecognizer *)recognizer {
-    [mClient call:User_Pudding];
-}
-
 - (void)stopButton:(UITapGestureRecognizer *)recognizer {
-    [mClient stop];
+    [mClient hangup];
 }
 
 - (void)closeButton:(UITapGestureRecognizer *)recognizer {
@@ -368,81 +333,235 @@
             result[12], result[13], result[14], result[15]
             ];
 }
-
-#pragma mark -
-- (void)videoConnectProgress:(int)progress{
-    NSLog(@"----------------fdsfds  %d",progress);
+- (void)saveRecoredVideo{
     
+    BOOL isEsit = [[NSFileManager defaultManager] fileExistsAtPath:mClient.recordVideoOutputPath];
+    if(!isEsit){
+        return;
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_global_queue(00, 0), ^{
+            ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
+            [assetLibrary writeVideoAtPathToSavedPhotosAlbum:[NSURL fileURLWithPath:mClient.recordVideoOutputPath] completionBlock:^(NSURL *assetURL, NSError *error){
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if(error){
+                        [self log:@"保存失败"];
+                    }else{
+                        [self log:@"录像已经保存相册"];
+                    }
+                });
+            }];
+        });
+    });
 }
-- (void)videoConnectOnEvent:(VideoConnectState) event Code:(int)code Msg:(id)msg{
-    NSLog(@"----------------- %d",event);
-    switch (event) {
-        case VIDEO_INFO_SERVER_ADDRESS_INVALID:
-            NSLog(@"视频连接服务器错误");
+
+- (void)log:(NSString *)logtext{
+    NSLog(@"%@",logtext);
+    NSString * str = logLable.text;
+    if(str == nil){
+        str = @"";
+    }
+    logLable.text = [str stringByAppendingString:[NSString stringWithFormat:@"\n%@",logtext]];
+    [logLable setContentOffset:CGPointMake(0, MAX(logLable.contentSize.height - logLable.frame.size.height, 0)) animated:YES];
+}
+
+
+
+#pragma mark - RBVideoEventDelegate
+
+/**
+ *  @author 智奎宇, 16-06-02 12:06:05
+ *
+ *  视频截图
+ *
+ *  @param state 截图状态
+ *  @param msg   信息
+ */
+- (void)captureVideo:(CAPTURE_VIDEO_STATE) state ResultImage:(UIImage *)captureImage Msg:(NSString *)msgInfo{
+    switch (state) {
+        case CAPTURE_VIDEO_SCUESS:
+        {
+            [self log:@"截屏成功"];
+            UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"截屏" message:@"" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil, nil];
+            UIView *view = [[UIView alloc]initWithFrame:CGRectMake(180, 5, 85, 75)];
+            UITextField *tf = [[UITextField alloc]initWithFrame:CGRectMake(0,0,400, 35)];
+            UITextField *tf2 = [[UITextField alloc]initWithFrame:CGRectMake(0,37,400, 35)];
+            tf.backgroundColor = [UIColor whiteColor];
+            tf2.backgroundColor = [UIColor whiteColor];
+            [view addSubview:tf];
+            [view addSubview:tf2];
+            
+            [alertView setValue:view forKey:@"accessoryView"];
+            
+            [alertView show];
+            
             break;
-        case VIDEO_INFO_LOGIN_FAIL:
-            NSLog(@"呼叫视频失败，没有登录视频服务器");
+        }
+        case CAPTURE_VIDEO_ERROR:{
+            [self log:@"截屏失败"];
             break;
-        case VIDEO_INFO_LOGIN_INFO_INVALID:
-            NSLog(@"用户登录信息错误");
+        }
+        default:
             break;
-        case VIDEO_SERVER_CONNECT:
-            NSLog(@"视频服务器连接成功");
+    }
+
+
+
+}
+/**
+ *  @author 智奎宇, 16-06-02 12:06:50
+ *
+ *  视频录制
+ *
+ *  @param state 视频录制状态
+ *  @param msg   信息
+ */
+- (void)recoredVideo:(RECORDER_VIDEO_STATE) state Msg:(id)msg{
+    switch (state) {
+        case RECORDER_VIDEO_STARTED:
+            [self log:@"开始录制视频"];
             break;
-        case VIDEO_SERVER_CLOSE:
-            NSLog(@"视频服务器断开");
+        case RECORDER_VIDEO_STOPED:
+            [self log:@"停止录制视频"];
+            [self saveRecoredVideo];
             break;
-        case VIDEO_SERVER_LOGIN_SCURSS:
-            NSLog(@"登陆成功");
-            break;
-        case VIDEO_SERVER_LOGIN_FAIL:
-            NSLog(@"登陆失败");
-            break;
-        case VIDEO_CALL_NO_READLY:
-            NSLog(@"视频呼叫状态错误 %@",msg);
-            break;
-        case VIDEO_CALL_ACCEPT:
-            NSLog(@"呼叫视频成功");
-            break;
-        case VIDEO_CALL_FAIL:
-            NSLog(@"呼叫视频失败");
-            break;
-        case VIDEO_CALL_ANSWER:
-            NSLog(@"呼叫视频收到回复");
-            break;
-        case VIDEO_CALL_INFO:
-            NSLog(@"呼叫视频收到布丁端的视频信息");
-            break;
-        case VIDEO_CONNECT_SCUESS:
-            NSLog(@"视频连接成功");
-            break;
-        case VIDEO_CONNECT_FAIL:
-            NSLog(@"视频连接失败");
-            break;
-        case VIDEO_CAPTURE_RESULT:{
-            NSLog(@"截屏成功");
-            UIImage * img = msg;
-            NSLog(@"截屏成功 %@",img);}
-            break;
-        case VIDEO_CAPTURE_RESULT_ERROR:
-            NSLog(@"截屏失败");
-            break;
-        case VIDEO_RECORDER_STARTED:
-            NSLog(@"开始录制视频");
-            break;
-        case VIDEO_RECORDER_STOPPED:
-            NSLog(@"录制视频完成%@",msg);
-            break;
-        case VIDEO_RECORDER_UNKOWN:
-            NSLog(@"视频录制错误");
-            break;
-        case VIDEO_RECORDER_ERROR:
-            NSLog(@"视频必须打开");
+        case RECORDER_VIDEO_ERROR:
+            [self log:@"视频录制出错"];
             break;
         default:
-            NSLog(@"fds");
+            break;
+    }
+
+}
+/**
+ *  @author 智奎宇, 16-06-02 12:06:55
+ *
+ *  登陆视频服务器错误
+ *
+ *  @param errorEvent 错误事件
+ *  @param msg        错误信息
+ */
+- (void)videoConnectServerError:(CONNECT_SERVER_ERROR)errorEvent Msg:(id)msg{
+    switch (errorEvent) {
+        case SERVER_USERINFO_INVALID:
+            [self log:@"视频服务器用户信息错误，登陆信息错误"];
+            break;
+        case SERVER_ADDRESS_INVALID:
+            [self log:@"视频服务器地址错误"];
+            break;
+        case SERVER_CLOSE:
+            [self log:@"视频服务器断开"];
+            break;
+        case SERVER_ERROR:
+            [self log:@"视频服务器断开_错误"];
+            break;
+        case SERVER_LOGIN_ERROR:
+            [self log:@"视频服务器登陆失败"];
+            break;
+        case SERVER_LOGINOUT:
+            [self log:@"视频服务器退出登陆"];
+            break;
+        default:
             break;
     }
     
 }
+
+/**
+ *  @author 智奎宇, 16-06-02 12:06:39
+ *
+ *  视频服务器登陆状态
+ */
+- (void)videoConnectServer:(CONNECT_SERVER_STATE)state{
+    switch (state) {
+        case CONNECT_SERVER_OPENED:
+            [self log:@"视频服务器打开"];
+            break;
+        case CONNECT_SERVER_LOGIN:
+            [self log:@"视频服务器登录成功"];
+            break;
+        default:
+            break;
+    }
+}
+/**
+ *  @author 智奎宇, 16-06-02 12:06:50
+ *
+ *  观看视频失败
+ *
+ *  @param errorEvent 错误类型
+ *  @param msg        错误信息
+ */
+- (void)videoConnectVideoError:(CONNECT_VIDEO_ERROR)errorEvent Msg:(id)msg{
+
+    switch (errorEvent) {
+        case CONNECT_VIDEO_STATE_ERROR:
+            [self log:@"视频服务器状态错误"];
+            break;
+        case CONNECT_VIDEO_FAIL:
+            [self log:@"视频连接失败"];
+            break;
+        case CONNECT_VIDEO_SERVER_ERROR:
+            [self log:@"视频服务错误"];
+            break;
+        case CONNECT_VIDEO_HANGUP:
+            [self log:@"视频断开"];
+            break;
+        case CONNECT_VIDEO_BUDY:
+            [self log:@"对方正忙"];
+            break;
+        case CONNECT_VIDEO_OFFLINE:
+            [self log:@"布丁端不在线"];
+            break;
+        case CONNECT_VIDEO_PERMISSION:
+            [self log:@"没有绑定布丁"];
+            break;
+        case CONNECT_VIDEO_HALLON:
+            [self log:@"霍尔开关打开"];
+            break;
+        default:
+            break;
+    }
+    
+}
+
+/**
+ *  @author 智奎宇, 16-06-02 12:06:17
+ *
+ *  视频连接状态
+ *
+ *  @param state    状态
+ *  @param progress 连接进度，参考进度，由4个状态评估
+ */
+- (void)videoConnectVideoState:(CONNECT_VIDEO_STATE)state DefaultProgress:(int)progress{
+    switch (state) {
+        case CONNECT_VIDEO_CALL_OK:
+            [self log:@"发送呼叫命令相应成功"];
+            break;
+        case CONNECT_VIDEO_ACCEPT:
+            [self log:@"同意呼叫"];
+            break;
+        case CONNECT_VIDEO_ANSWER:
+            [self log:@"收到视频连接回复"];
+            break;
+        case CONNECT_VIDEO_INFO:
+            [self log:@"收到视频连接信息"];
+            break;
+        case CONNECT_VIDEO_BYE:
+            [self log:@"收到视频断开消息"];
+            break;
+        case CONNECT_VIDEO_SCUESS:
+            [self log:@"视频连接成功"];
+            break;
+        default:
+            break;
+    }
+    
+}
+
+
+
+
+
+
 @end

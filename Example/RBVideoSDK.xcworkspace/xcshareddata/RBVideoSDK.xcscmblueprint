@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "6E3A0BEE27B3BF59CAE59411E30C3B58707667B0",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "721687DD7241B4BD35A264D9968EABFF39E35075" : 0,
+    "6E3A0BEE27B3BF59CAE59411E30C3B58707667B0" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "DA9FFE65-E9EF-4E88-8D67-63255D934DF5",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "721687DD7241B4BD35A264D9968EABFF39E35075" : "..",
+    "6E3A0BEE27B3BF59CAE59411E30C3B58707667B0" : "RBVideoSDK\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "RBVideoSDK",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Example\/RBVideoSDK.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "ssh:\/\/github.com\/zhiyu330691038\/RBVideoSDK.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "6E3A0BEE27B3BF59CAE59411E30C3B58707667B0"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "ssh:\/\/gerrit.365jiating.com:29418\/VideoSdk",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "721687DD7241B4BD35A264D9968EABFF39E35075"
+    }
+  ]
+}

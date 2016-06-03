@@ -10,12 +10,9 @@
 #define RBVideoClient_h
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "RBVideoAddress.h"
-#import "RBVideoCredential.h"
-#import "RBVideoPeer.h"
-#import "RBVideoCallDelegate.h"
+
 #import "RBVideoEvent.h"
-#import "RBVideoConfiguration.h"
+
 
 @interface RBVideoClient : NSObject
 
@@ -25,35 +22,63 @@
  *  视频连接状态的回调
  */
 @property (nonatomic,weak) id<RBVideoEventDelegate> delegate;
-
-/**
- *  @author 智奎宇, 16-05-18 11:05:55
- *
- *  连接视频的地址
- */
-@property (nonatomic,strong) RBVideoAddress  *  connectAddress;
-
 /**
  *  @author 智奎宇, 16-05-18 11:05:27
  *
- *  展示远程画面的View
+ *  展示远程画面的View   默认是
+        NSArray *Paths=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *path=[[Paths objectAtIndex:0] stringByAppendingString:@"/recored.mp4"];
  */
 @property (nonatomic,readonly,strong) UIView * remoteRendererView;
 
 /**
- *  @author 智奎宇, 16-05-18 12:05:57
+ *  @author 智奎宇, 16-06-02 13:06:58
  *
- *  视频的认证信息
+ *  视频录制的视频默认输出路径
  */
-@property(nonatomic,strong) RBVideoCredential * videoCredential;
+@property(nonatomic,strong) NSString * recordVideoOutputPath;
+/**
+ *  @author 智奎宇, 16-06-02 13:06:46
+ *
+ *  远程视频声音
+ */
+@property(nonatomic,assign) BOOL  remoteAudioEnable;
+
+/**
+ *  @author 智奎宇, 16-06-02 13:06:46
+ *
+ *  本地视频声音
+ */
+@property(nonatomic,assign) BOOL  localAudioEnable;
 
 
 /**
- *  @author 智奎宇, 16-05-18 15:05:56
+ *  @author 智奎宇, 16-06-02 13:06:46
  *
- *  视频配置
+ *  当前进度
  */
-@property(nonatomic,strong) RBVideoConfiguration * configation;
+@property(nonatomic,assign,readonly) float  progress;
+
+
+-(instancetype)init  __attribute__((
+                                    unavailable("init is not a supported initializer for this class.")));
+
+/**
+ *  @author 智奎宇, 16-06-02 13:06:47
+ *
+ *  获取视屏sdk 的实例
+ *
+ *  @param userid    用户id
+ *  @param token     用户token
+ *  @param psd       视频密码
+ *  @param apikey    sdk appkey
+ *  @param appid     sdk appid
+ *  @param serverURL 视频服务器的url
+ *
+ *  @return 视屏sdk 的实例
+ */
++ (RBVideoClient *)getClient:(NSString *)userid Token:(NSString * )token Psd:(NSString *)psd APIKEY:(NSString *)apikey APPID:(NSString *)appid ServerURL:(NSString *)serverURL;
+
 /**
  *  @author 智奎宇, 16-05-25 11:05:28
  *
@@ -79,24 +104,11 @@
 - (void)call:(NSString *)clientId;
 
 /**
- *  @author 智奎宇, 16-05-18 12:05:34
- *
- *  展示画面
- */
-- (void)start;
-/**
- *  @author 智奎宇, 16-05-18 12:05:28
- *
- *  暂停展示画面
- */
-- (void)pause;
-
-/**
  *  @author 智奎宇, 16-05-18 12:05:22
  *
  *  断开视频连接，如果想重新连接必须 调用begin
  */
-- (void)stop;
+- (void)hangup;
 
 /**
  *  @author 智奎宇, 16-05-18 12:05:26
@@ -104,8 +116,6 @@
  *  视频视频里面的资源
  */
 - (void)free;
-
-
 /**
  *  @author 智奎宇, 16-05-26 20:05:13
  *
