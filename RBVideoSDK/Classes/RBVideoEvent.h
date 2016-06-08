@@ -11,6 +11,7 @@
 #import <UIKit/UIKit.h>
 
 typedef enum {
+<<<<<<< HEAD
     RBViewScaleToFill,
     RBViewScaleAspectFit,
     RBViewAspectFill,
@@ -37,6 +38,25 @@ typedef enum {
     CONNECT_VIDEO_STATE_ERROR,//视频服务器状态错误 ，本地状态错误
     CONNECT_VIDEO_FAIL, //视频连接失败 call 服务器状态错误 是 error 状态
     CONNECT_VIDEO_SERVER_ERROR, //视频服务错误，call 返回异常
+=======
+    SERVER_USERINFO_INVALID,//视频服务器用户信息错误，登陆信息错误
+    SERVER_ADDRESS_INVALID,//视频服务器地址错误
+    SERVER_CLOSE,//视频服务器断开
+    SERVER_ERROR,//
+    SERVER_LOGIN_ERROR,//视频服务器登陆失败
+    SERVER_LOGINOUT,//视频服务器退出
+} CONNECT_SERVER_ERROR; //登陆视频服务器错误
+
+typedef enum {
+    CONNECT_SERVER_OPENED,//视频服务器打开
+    CONNECT_SERVER_LOGIN,//视频服务器登录
+} CONNECT_SERVER_STATE; //登陆视频服务器状态
+
+typedef enum {
+    CONNECT_VIDEO_STATE_ERROR,//视频服务器状态错误
+    CONNECT_VIDEO_FAIL, //视频连接失败
+    CONNECT_VIDEO_SERVER_ERROR, //视频服务错误
+>>>>>>> 18f6980cee5764e763d379f6f98ca80a35aed18b
     CONNECT_VIDEO_HANGUP, //视频断开
     CONNECT_VIDEO_BUDY, //对方正忙
     CONNECT_VIDEO_OFFLINE, //布丁端不在线
@@ -46,6 +66,10 @@ typedef enum {
 
 
 typedef enum {
+<<<<<<< HEAD
+=======
+    CONNECT_VIDEO_CALL_OK,//发送呼叫命令相应成功
+>>>>>>> 18f6980cee5764e763d379f6f98ca80a35aed18b
     CONNECT_VIDEO_ACCEPT,//同意呼叫
     CONNECT_VIDEO_ANSWER,//收到视频连接回复
     CONNECT_VIDEO_INFO,//收到视频连接信息

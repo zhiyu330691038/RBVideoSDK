@@ -22,6 +22,7 @@
  *  视频连接状态的回调
  */
 @property (nonatomic,weak) id<RBVideoEventDelegate> delegate;
+<<<<<<< HEAD
 /**
  *  @author 智奎宇, 16-05-18 11:05:27
  *
@@ -54,6 +55,35 @@
  *
  *  本地视频声音
  */
+=======
+/**
+ *  @author 智奎宇, 16-05-18 11:05:27
+ *
+ *  展示远程画面的View   默认是
+        NSArray *Paths=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *path=[[Paths objectAtIndex:0] stringByAppendingString:@"/recored.mp4"];
+ */
+@property (nonatomic,readonly,strong) UIView * remoteRendererView;
+
+/**
+ *  @author 智奎宇, 16-06-02 13:06:58
+ *
+ *  视频录制的视频默认输出路径
+ */
+@property(nonatomic,strong) NSString * recordVideoOutputPath;
+/**
+ *  @author 智奎宇, 16-06-02 13:06:46
+ *
+ *  远程视频声音
+ */
+@property(nonatomic,assign) BOOL  remoteAudioEnable;
+
+/**
+ *  @author 智奎宇, 16-06-02 13:06:46
+ *
+ *  本地视频声音
+ */
+>>>>>>> 18f6980cee5764e763d379f6f98ca80a35aed18b
 @property(nonatomic,assign) BOOL  localAudioEnable;
 
 
