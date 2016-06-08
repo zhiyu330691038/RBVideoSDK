@@ -10,23 +10,30 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
 #import "RBVideoClient.h"
-@interface RBViewController ()
+#import "AssetsLibrary/AssetsLibrary.h"
+#import <AVFoundation/AVFoundation.h>
+@interface RBViewController ()<RBVideoEventDelegate>
 {
-
-    UIButton *_startButton;
     UIButton *_stopButton;
     UIButton *_bindButton;
     UIButton *_callButton;
     UIButton *_closeButton;
     UIButton *_jiepinButton;
+    UIButton *_loaudioButton;
+    UIButton *_reaudioButton;
     UIButton *_luxiangButton;
     UIButton *_luxiangButtonstop;
+    UIButton *lashentiancButtonstop;
+    UIButton *shiyingdaxiaoButtonstop;
+    UIButton *suofangtianmanButtonstop;
     
     RBVideoClient * mClient;
     UIView *_videoView;
     NSString *_user;
     NSString *_pass;
     NSString *_token;
+    UITextView * logLable;
+    
 }
 @end
 
@@ -75,25 +82,6 @@
           forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_callButton];
     
-    _startButton = [[UIButton alloc] initWithFrame:CGRectZero];
-    _startButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    _startButton.backgroundColor = [UIColor blueColor];
-    _startButton.layer.cornerRadius = 5;
-    _startButton.clipsToBounds = YES;
-    _startButton.contentEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 10);
-    [_startButton setTitle:@"start"
-                  forState:UIControlStateNormal];
-    _startButton.titleLabel.font = controlFont;
-    [_startButton setTitleColor:[UIColor whiteColor]
-                       forState:UIControlStateNormal];
-    [_startButton setTitleColor:[UIColor lightGrayColor]
-                       forState:UIControlStateSelected];
-    [_startButton sizeToFit];
-    [_startButton addTarget:self
-                     action:@selector(startButton:)
-           forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_startButton];
-    
     _stopButton = [[UIButton alloc] initWithFrame:CGRectZero];
     _stopButton = [UIButton buttonWithType:UIButtonTypeSystem];
     _stopButton.backgroundColor = [UIColor blueColor];
@@ -131,6 +119,50 @@
                      action:@selector(closeButton:)
            forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_closeButton];
+    
+    _loaudioButton = [[UIButton alloc] initWithFrame:CGRectZero];
+    _loaudioButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    _loaudioButton.backgroundColor = [UIColor blueColor];
+    _loaudioButton.layer.cornerRadius = 5;
+    _loaudioButton.clipsToBounds = YES;
+    _loaudioButton.contentEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 10);
+    [_loaudioButton setTitle:@"本地静音"
+                    forState:UIControlStateNormal];
+    [_loaudioButton setTitle:@"打开声音"
+                    forState:UIControlStateSelected];
+    _loaudioButton.titleLabel.font = controlFont;
+    [_loaudioButton setTitleColor:[UIColor whiteColor]
+                         forState:UIControlStateNormal];
+    [_loaudioButton setTitleColor:[UIColor lightGrayColor]
+                         forState:UIControlStateSelected];
+    [_loaudioButton sizeToFit];
+    [_loaudioButton addTarget:self
+                       action:@selector(_loaudioButton:)
+             forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_loaudioButton];
+    
+    
+    _reaudioButton = [[UIButton alloc] initWithFrame:CGRectZero];
+    _reaudioButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    _reaudioButton.backgroundColor = [UIColor blueColor];
+    _reaudioButton.layer.cornerRadius = 5;
+    _reaudioButton.clipsToBounds = YES;
+    _reaudioButton.contentEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 10);
+    [_reaudioButton setTitle:@"远程静音"
+                    forState:UIControlStateNormal];
+    [_reaudioButton setTitle:@"打开声音"
+                    forState:UIControlStateSelected];
+    _reaudioButton.titleLabel.font = controlFont;
+    [_reaudioButton setTitleColor:[UIColor whiteColor]
+                         forState:UIControlStateNormal];
+    [_reaudioButton setTitleColor:[UIColor lightGrayColor]
+                         forState:UIControlStateSelected];
+    [_reaudioButton sizeToFit];
+    [_reaudioButton addTarget:self
+                       action:@selector(_reaudioButton:)
+             forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_reaudioButton];
+    
     
     
     _jiepinButton = [[UIButton alloc] initWithFrame:CGRectZero];
@@ -193,36 +225,121 @@
                  forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_luxiangButtonstop];
     
-    CGRect connectFrame = CGRectMake(0, 10, 90, 40);
+    
+    lashentiancButtonstop = [[UIButton alloc] initWithFrame:CGRectZero];
+    lashentiancButtonstop = [UIButton buttonWithType:UIButtonTypeSystem];
+    lashentiancButtonstop.backgroundColor = [UIColor blueColor];
+    lashentiancButtonstop.layer.cornerRadius = 5;
+    lashentiancButtonstop.clipsToBounds = YES;
+    lashentiancButtonstop.contentEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 10);
+    [lashentiancButtonstop setTitle:@"拉伸填充"
+                           forState:UIControlStateNormal];
+    lashentiancButtonstop.titleLabel.font = controlFont;
+    [lashentiancButtonstop setTitleColor:[UIColor whiteColor]
+                                forState:UIControlStateNormal];
+    [lashentiancButtonstop setTitleColor:[UIColor lightGrayColor]
+                                forState:UIControlStateSelected];
+    [lashentiancButtonstop sizeToFit];
+    [lashentiancButtonstop addTarget:self
+                              action:@selector(lashentiancButtonstop:)
+                    forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:lashentiancButtonstop];
+    
+    
+    shiyingdaxiaoButtonstop = [[UIButton alloc] initWithFrame:CGRectZero];
+    shiyingdaxiaoButtonstop = [UIButton buttonWithType:UIButtonTypeSystem];
+    shiyingdaxiaoButtonstop.backgroundColor = [UIColor blueColor];
+    shiyingdaxiaoButtonstop.layer.cornerRadius = 5;
+    shiyingdaxiaoButtonstop.clipsToBounds = YES;
+    shiyingdaxiaoButtonstop.contentEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 10);
+    [shiyingdaxiaoButtonstop setTitle:@"自适应"
+                             forState:UIControlStateNormal];
+    shiyingdaxiaoButtonstop.titleLabel.font = controlFont;
+    [shiyingdaxiaoButtonstop setTitleColor:[UIColor whiteColor]
+                                  forState:UIControlStateNormal];
+    [shiyingdaxiaoButtonstop setTitleColor:[UIColor lightGrayColor]
+                                  forState:UIControlStateSelected];
+    [shiyingdaxiaoButtonstop sizeToFit];
+    [shiyingdaxiaoButtonstop addTarget:self
+                                action:@selector(shiyingdaxiaoButtonstop:)
+                      forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:shiyingdaxiaoButtonstop];
+    
+    
+    
+    suofangtianmanButtonstop = [[UIButton alloc] initWithFrame:CGRectZero];
+    suofangtianmanButtonstop = [UIButton buttonWithType:UIButtonTypeSystem];
+    suofangtianmanButtonstop.backgroundColor = [UIColor blueColor];
+    suofangtianmanButtonstop.layer.cornerRadius = 5;
+    suofangtianmanButtonstop.clipsToBounds = YES;
+    suofangtianmanButtonstop.contentEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 10);
+    [suofangtianmanButtonstop setTitle:@"适应填充"
+                              forState:UIControlStateNormal];
+    suofangtianmanButtonstop.titleLabel.font = controlFont;
+    [suofangtianmanButtonstop setTitleColor:[UIColor whiteColor]
+                                   forState:UIControlStateNormal];
+    [suofangtianmanButtonstop setTitleColor:[UIColor lightGrayColor]
+                                   forState:UIControlStateSelected];
+    [suofangtianmanButtonstop sizeToFit];
+    [suofangtianmanButtonstop addTarget:self
+                                 action:@selector(suofangtianmanButtonstop:)
+                       forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:suofangtianmanButtonstop];
+    
+    
+    
+    
+    logLable = [[UITextView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 300, self.view.frame.size.width, 300)];
+    logLable.editable = NO;
+    [self.view addSubview:logLable];
+    
+    CGRect connectFrame = CGRectMake(0, 0, 90, 36);
     connectFrame.origin.y =
     CGRectGetMaxY(connectFrame) - 10;
     _bindButton.frame = connectFrame;
     
-    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 10;
+    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 5;
     _callButton.frame = connectFrame;
     
-    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 10;
-    _startButton.frame = connectFrame;
     
-    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 10;
+    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 5;
     _stopButton.frame = connectFrame;
     
-    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 10;
+    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 5;
     _closeButton.frame = connectFrame;
     
-    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 10;
-    _closeButton.frame = connectFrame;
-    
-    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 10;
+    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 5;
     _luxiangButton.frame = connectFrame;
     
-    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 10;
+    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 5;
     _luxiangButtonstop.frame = connectFrame;
     
     
-    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 10;
+    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 5;
     _jiepinButton.frame = connectFrame;
     
+    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 5;
+    _loaudioButton.frame = connectFrame;
+    
+    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 5;
+    _reaudioButton.frame = connectFrame;
+    
+    
+    connectFrame.origin.y = CGRectGetMaxY(connectFrame) + 10;
+    connectFrame.origin.x = CGRectGetMaxX(connectFrame) + 10;
+    shiyingdaxiaoButtonstop.frame = connectFrame;
+    
+    
+    connectFrame.origin.x = CGRectGetMaxX(connectFrame) + 10;
+    lashentiancButtonstop.frame = connectFrame;
+    
+    
+    connectFrame.origin.x = CGRectGetMaxX(connectFrame) + 10;
+    suofangtianmanButtonstop.frame = connectFrame;
+    
+    
+    /** 设置声音配置 */
+    [self loadSpekerConfig];
     
     [self login];
 }
@@ -235,10 +352,13 @@
 
 #define  Pudding 1
 //#define  User_Phone @"18500682208"
-#define  User_Phone @"18500682208"
+#define  User_Phone @"15811231071"
 #define  User_Psd @"123456"
 //#define  User_Pudding @"1011000000000002"
-#define  User_Pudding @"1011000000200BAE"
+//#define  User_Pudding @"1011000000200C15"
+#define  User_Pudding @"1011000000200C0D"
+//#define  User_Pudding @"1011000000200BAE"
+
 //#define  User_Pudding @"1011000000000026"
 //#define User_Pudding @"B93BFACD9BD9B7FD"
 
@@ -282,38 +402,79 @@
     [self sdk];
     
 }
+#pragma mark 监听声道的改变
+- (void)routeChange:(NSNotification*)notify{
+    if(notify){
+        [self log:[NSString stringWithFormat:@"声音声道改变%@",notify]];
+    }
+    
+    AVAudioSessionRouteDescription*route = [[AVAudioSession sharedInstance]currentRoute];
+    for (AVAudioSessionPortDescription * desc in [route outputs]) {
+        
+        [self log:[NSString stringWithFormat:@"输出源名称%@",[desc portName]]];
+        [self log:[NSString stringWithFormat:@"当前声道%@",[desc portType]]];
+        
+        if ([[desc portType] isEqualToString:@"Headphones"] || [[desc portType] isEqualToString:@"BluetoothHFP"] || [[desc portType] isEqualToString:@"BluetoothA2DPOutput"]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideNone error:nil];
+            });
+        }else{
+            [self log:@"设置为扬声器"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
+            });
+        }
+        
+        
+    }
+}
 
-
-
+/**
+ *  @author 智奎宇, 16-01-14 16:01:35
+ *
+ *  设置声音播放配置
+ */
+- (void)loadSpekerConfig{
+    /** 6.设置后台播放声音 */
+    [[AVAudioSession sharedInstance]
+     setCategory: AVAudioSessionCategoryPlayback
+     error: nil];
+    
+    
+    [self routeChange:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(routeChange:) name:AVAudioSessionRouteChangeNotification object:[AVAudioSession sharedInstance]];
+    
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+}
 /* sdk */
 - (void)sdk {
-    mClient = [[RBVideoClient alloc] init];
+    mClient = [RBVideoClient getClient:_user Token:_token Psd:@"aa" APIKEY:@"apikey" APPID:@"1234" ServerURL:@"wss://v3.roo.bo/ws"];
     mClient.delegate = self;
-    RBVideoConfiguration * config = [[RBVideoConfiguration alloc] init];
-    [mClient setConfigation:config];
     
-    RBVideoAddress * address = [[RBVideoAddress alloc] init];
-    address.urlString = @"wss://v3.roo.bo/ws";
-    [mClient setConnectAddress:address];
-    
-    RBVideoCredential * videoCredential = [[RBVideoCredential alloc] init];
-    videoCredential.token = _token;
-    videoCredential.userId = _user;
-    videoCredential.password = @"1";
-    videoCredential.videoClientId = User_Pudding;
-    videoCredential.appkey = @"appkey";
-    videoCredential.appid = @"1234";
-    [mClient setVideoCredential:videoCredential];
     [mClient begin];
     
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         UIView * view = [mClient getVideoView];
+        [mClient setViewModle:RBViewAspectFill];
         view.frame = CGRectMake(100, 30, 300, 300);
-        //        view.backgroundColor = [UIColor redColor];
+        view.backgroundColor = [UIColor redColor];
         [self.view addSubview:view];
     });
     
+}
+
+
+- (void)shiyingdaxiaoButtonstop:(id)sender{
+    [mClient setViewModle:RBViewScaleAspectFit];
+}
+
+- (void)suofangtianmanButtonstop:(id)sender{
+    [mClient setViewModle:RBViewAspectFill];
+}
+
+- (void)lashentiancButtonstop:(id)sender{
+    [mClient setViewModle:RBViewScaleToFill];
 }
 
 - (void)_luxiangButtonstop:(id)sender{
@@ -330,20 +491,26 @@
     
 }
 
-
-
-- (void)startButton:(UITapGestureRecognizer *)recognizer {
-    [mClient call:User_Pudding];
-}
-
 - (void)stopButton:(UITapGestureRecognizer *)recognizer {
-    [mClient stop];
+    [mClient hangup];
 }
 
 - (void)closeButton:(UITapGestureRecognizer *)recognizer {
     [mClient free];
     
 }
+
+- (void)_loaudioButton:(UIButton *)sender{
+    sender.selected = !sender.selected;
+    [mClient setLocalAudioEnable:sender.selected];
+    
+}
+
+- (void)_reaudioButton:(UIButton *)sender{
+    sender.selected = !sender.selected;
+    [mClient setRemoteAudioEnable:sender.selected];
+}
+
 
 - (void)bindButton:(UITapGestureRecognizer *)recognizer {
     [self sdk];
@@ -368,81 +535,237 @@
             result[12], result[13], result[14], result[15]
             ];
 }
+- (void)saveRecoredVideo{
+    
+    BOOL isEsit = [[NSFileManager defaultManager] fileExistsAtPath:mClient.recordVideoOutputPath];
+    if(!isEsit){
+        return;
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_global_queue(00, 0), ^{
+            ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
+            [assetLibrary writeVideoAtPathToSavedPhotosAlbum:[NSURL fileURLWithPath:mClient.recordVideoOutputPath] completionBlock:^(NSURL *assetURL, NSError *error){
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if(error){
+                        [self log:@"保存失败"];
+                    }else{
+                        [self log:@"录像已经保存相册"];
+                    }
+                });
+            }];
+        });
+    });
+}
 
-#pragma mark -
-- (void)videoConnectProgress:(int)progress{
-    NSLog(@"----------------fdsfds  %d",progress);
+- (void)log:(NSString *)logtext{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        NSLog(@"%@",logtext);
+        NSString * str = logLable.text;
+        if(str == nil){
+            str = @"";
+        }
+        [logLable scrollsToTop];
+        logLable.text = [[NSString stringWithFormat:@"%@\n",logtext] stringByAppendingString:logLable.text];
+        [logLable setContentOffset:CGPointMake(0,0) animated:YES];
+    });
+    
     
 }
-- (void)videoConnectOnEvent:(VideoConnectState) event Code:(int)code Msg:(id)msg{
-    NSLog(@"----------------- %d",event);
-    switch (event) {
-        case VIDEO_INFO_SERVER_ADDRESS_INVALID:
-            NSLog(@"视频连接服务器错误");
+
+
+
+#pragma mark - RBVideoEventDelegate
+
+/**
+ *  @author 智奎宇, 16-06-02 12:06:05
+ *
+ *  视频截图
+ *
+ *  @param state 截图状态
+ *  @param msg   信息
+ */
+- (void)captureVideo:(CAPTURE_VIDEO_STATE) state ResultImage:(UIImage *)captureImage Msg:(NSString *)msgInfo{
+    switch (state) {
+        case CAPTURE_VIDEO_SCUESS:
+        {
+            [self log:@"截屏成功"];
+            UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"截屏" message:@"" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil, nil];
+            UIView *view = [[UIView alloc]initWithFrame:CGRectMake(180, 5, 85, 85)];
+            UIImageView * imagev = [[UIImageView alloc] initWithFrame:CGRectMake(50, 0, 85, 85)];
+            imagev.image= captureImage;
+            [view addSubview:imagev];
+            
+            
+            [alertView setValue:view forKey:@"accessoryView"];
+            
+            [alertView show];
+            
             break;
-        case VIDEO_INFO_LOGIN_FAIL:
-            NSLog(@"呼叫视频失败，没有登录视频服务器");
+        }
+        case CAPTURE_VIDEO_ERROR:{
+            [self log:@"截屏失败"];
             break;
-        case VIDEO_INFO_LOGIN_INFO_INVALID:
-            NSLog(@"用户登录信息错误");
+        }
+        default:
             break;
-        case VIDEO_SERVER_CONNECT:
-            NSLog(@"视频服务器连接成功");
+    }
+    
+    
+    
+}
+/**
+ *  @author 智奎宇, 16-06-02 12:06:50
+ *
+ *  视频录制
+ *
+ *  @param state 视频录制状态
+ *  @param msg   信息
+ */
+- (void)recoredVideo:(RECORDER_VIDEO_STATE) state Msg:(id)msg{
+    switch (state) {
+        case RECORDER_VIDEO_STARTED:
+            [self log:@"开始录制视频"];
             break;
-        case VIDEO_SERVER_CLOSE:
-            NSLog(@"视频服务器断开");
+        case RECORDER_VIDEO_STOPED:
+            [self log:@"停止录制视频"];
+            [self saveRecoredVideo];
             break;
-        case VIDEO_SERVER_LOGIN_SCURSS:
-            NSLog(@"登陆成功");
-            break;
-        case VIDEO_SERVER_LOGIN_FAIL:
-            NSLog(@"登陆失败");
-            break;
-        case VIDEO_CALL_NO_READLY:
-            NSLog(@"视频呼叫状态错误 %@",msg);
-            break;
-        case VIDEO_CALL_ACCEPT:
-            NSLog(@"呼叫视频成功");
-            break;
-        case VIDEO_CALL_FAIL:
-            NSLog(@"呼叫视频失败");
-            break;
-        case VIDEO_CALL_ANSWER:
-            NSLog(@"呼叫视频收到回复");
-            break;
-        case VIDEO_CALL_INFO:
-            NSLog(@"呼叫视频收到布丁端的视频信息");
-            break;
-        case VIDEO_CONNECT_SCUESS:
-            NSLog(@"视频连接成功");
-            break;
-        case VIDEO_CONNECT_FAIL:
-            NSLog(@"视频连接失败");
-            break;
-        case VIDEO_CAPTURE_RESULT:{
-            NSLog(@"截屏成功");
-            UIImage * img = msg;
-            NSLog(@"截屏成功 %@",img);}
-            break;
-        case VIDEO_CAPTURE_RESULT_ERROR:
-            NSLog(@"截屏失败");
-            break;
-        case VIDEO_RECORDER_STARTED:
-            NSLog(@"开始录制视频");
-            break;
-        case VIDEO_RECORDER_STOPPED:
-            NSLog(@"录制视频完成%@",msg);
-            break;
-        case VIDEO_RECORDER_UNKOWN:
-            NSLog(@"视频录制错误");
-            break;
-        case VIDEO_RECORDER_ERROR:
-            NSLog(@"视频必须打开");
+        case RECORDER_VIDEO_ERROR:
+            [self log:@"视频录制出错"];
             break;
         default:
-            NSLog(@"fds");
             break;
     }
     
 }
+/**
+ *  @author 智奎宇, 16-06-02 12:06:55
+ *
+ *  登陆视频服务器错误
+ *
+ *  @param errorEvent 错误事件
+ *  @param msg        错误信息
+ */
+- (void)videoConnectServerError:(CONNECT_SERVER_ERROR)errorEvent Msg:(id)msg{
+    switch (errorEvent) {
+        case  SERVER_RECONNECT:
+            [self log:@"视频服务器用户信息错误，正在重连"];
+            break;
+        case SERVER_USERINFO_INVALID:
+            [self log:@"视频服务器用户信息错误，登陆信息错误"];
+            break;
+        case SERVER_ADDRESS_INVALID:
+            [self log:@"视频服务器地址错误"];
+            break;
+        case SERVER_CLOSE:
+            [self log:@"视频服务器断开"];
+            break;
+        case SERVER_ERROR:
+            [self log:@"视频服务器断开_错误"];
+            break;
+        case SERVER_LOGIN_ERROR:
+            [self log:@"视频服务器登陆失败"];
+            break;
+        case SERVER_LOGINOUT:
+            [self log:@"视频服务器退出登陆"];
+            break;
+        default:
+            break;
+    }
+    
+}
+
+/**
+ *  @author 智奎宇, 16-06-02 12:06:39
+ *
+ *  视频服务器登陆状态
+ */
+- (void)videoConnectServer:(CONNECT_SERVER_STATE)state{
+    switch (state) {
+        case CONNECT_SERVER_OPENED:
+            [self log:@"视频服务器打开"];
+            break;
+        case CONNECT_SERVER_LOGIN:
+            [self log:@"视频服务器登录成功"];
+            break;
+        default:
+            break;
+    }
+}
+/**
+ *  @author 智奎宇, 16-06-02 12:06:50
+ *
+ *  观看视频失败
+ *
+ *  @param errorEvent 错误类型
+ *  @param msg        错误信息
+ */
+- (void)videoConnectVideoError:(CONNECT_VIDEO_ERROR)errorEvent Msg:(id)msg{
+    
+    switch (errorEvent) {
+        case CONNECT_VIDEO_STATE_ERROR:
+            [self log:@"视频服务器状态错误"];
+            break;
+        case CONNECT_VIDEO_FAIL:
+            [self log:@"视频连接失败"];
+            break;
+        case CONNECT_VIDEO_SERVER_ERROR:
+            [self log:@"视频服务错误"];
+            break;
+        case CONNECT_VIDEO_HANGUP:
+            [self log:@"视频断开"];
+            break;
+        case CONNECT_VIDEO_BUDY:
+            [self log:@"对方正忙"];
+            break;
+        case CONNECT_VIDEO_OFFLINE:
+            [self log:@"布丁端不在线"];
+            break;
+        case CONNECT_VIDEO_PERMISSION:
+            [self log:@"没有绑定布丁"];
+            break;
+        case CONNECT_VIDEO_HALLON:
+            [self log:@"霍尔开关打开"];
+            break;
+        default:
+            break;
+    }
+    
+}
+
+/**
+ *  @author 智奎宇, 16-06-02 12:06:17
+ *
+ *  视频连接状态
+ *
+ *  @param state    状态
+ *  @param progress 连接进度，参考进度，由4个状态评估
+ */
+- (void)videoConnectVideoState:(CONNECT_VIDEO_STATE)state DefaultProgress:(int)progress{
+    switch (state) {
+        case CONNECT_VIDEO_ACCEPT:
+            [self log:@"同意呼叫"];
+            break;
+        case CONNECT_VIDEO_ANSWER:
+            [self log:@"收到视频连接回复"];
+            break;
+        case CONNECT_VIDEO_INFO:
+            [self log:@"收到视频连接信息"];
+            break;
+        case CONNECT_VIDEO_BYE:
+            [self log:@"收到视频断开消息"];
+            break;
+        case CONNECT_VIDEO_SCUESS:
+            [self log:@"视频连接成功"];
+            break;
+        default:
+            break;
+    }
+    
+}
+
+
+
+
 @end

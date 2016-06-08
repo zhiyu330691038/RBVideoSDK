@@ -8,89 +8,118 @@
 
 #ifndef RBVideoEvent_h
 #define RBVideoEvent_h
-
-typedef enum  {
-    //用户登录信息
-    EVENT_LOGIN_INFO_SCUESS,
-    EVENT_LOGIN_INFO_TOKEN_INVALID,
-    EVENT_LOGIN_VIDEO_ADDRESS_INVALID,
-    EVENT_LOGIN_INFO_INVALID,
-    EVENT_LOGIN_OFFLINE,
-    EVENT_LOGIN_UNKOWN,
-    
-    //视频连接
-    EVENT_VIDEO_ACCEPT,
-    EVENT_VIDEO_REJECTCALL,
-    EVENT_VIDEO_HALL_STATE_OPEN,
-    EVENT_VIDEO_BUSY,
-    EVENT_VIDEO_ERROR,
-    EVENT_VIDEO_CONNECTED,
-    EVENT_VIDEO_PROGRESS,
-    EVENT_VIDEO_CLOSE,
-    EVENT_VIDEO_ERROR_PERMISSION ,
-    EVENT_VIDEO_ERROR_OFFLINE ,
-    EVENT_VIDEO_ERROR_OTHER ,
-    EVENT_VIDEO_ERROR_UNKOWN  ,
-    EVENT_ERROR_UNKOWN  ,
-    EVENT_VIDEO_ERROR_CONNECT_FAILED,
-    
-    //视频截图
-    EVENT_CAPTURE_RESULT,
-    EVENT_CAPTURE_RESULT_ERROR,
-    
-    //视频录制视频
-    EVENT_RECORDER_STARTED,
-    EVENT_RECORDER_STOPPED,
-    EVENT_RECORDER_ERROR_INIT   ,
-    EVENT_RECORDER_ERROR_OUTPUT ,
-    EVENT_RECORDER_UNKOWN
-    
-    
-} VideoEvent;
+#import <UIKit/UIKit.h>
 
 typedef enum {
-    VIDEO_INFO_SERVER_ADDRESS_INVALID,//视频连接服务器错误
-    VIDEO_INFO_LOGIN_INFO_INVALID,//用户登录信息错误
-    VIDEO_INFO_LOGIN_FAIL,//用户登录信息错误
+    RBViewScaleToFill,
+    RBViewScaleAspectFit,
+    RBViewAspectFill,
     
-    VIDEO_SERVER_CONNECT,//视频服务器连接成功
-    VIDEO_SERVER_CLOSE,//视频服务器断开
-    VIDEO_SERVER_RECONNECT,//视频服务器重新连接
+} RBViewModle;
 
-    VIDEO_SERVER_LOGIN_SCURSS,//视频服务登陆成功
-    VIDEO_SERVER_LOGIN_FAIL,//视频服务登陆失败
-    
-    VIDEO_CALL_NO_READLY,//视频呼叫状态错误
-    VIDEO_CALL_ACCEPT,//呼叫视频成功
-    VIDEO_CALL_FAIL,//呼叫视频成功
-    VIDEO_CALL_ANSWER,//收到视频连接回复
-    VIDEO_CALL_INFO,//收到视频连接信息 VIDEO_CALL_ANSWER 顺序不确定
-    
-    VIDEO_CONNECT_SCUESS,//视频连接成功
-    VIDEO_CONNECT_FAIL,//视频连接失败
-    //视频截图
-    VIDEO_CAPTURE_RESULT,
-    VIDEO_CAPTURE_RESULT_ERROR,
-    
-    VIDEO_RECORDER_STARTED,
-    VIDEO_RECORDER_STOPPED,
-    VIDEO_RECORDER_UNKOWN,
-    VIDEO_RECORDER_ERROR,
-    
-} VideoConnectState;
 
 typedef enum {
-    VIDEO_ERROR_OFFLINE,
-    VIDEO_ERROR_PERMISSION,
-    VIDEO_ERROR_SERVER,
-} VideoCallEvent;
+    SERVER_USERINFO_INVALID,//视频服务器用户信息错误，登陆信息错误
+    SERVER_ADDRESS_INVALID,//视频服务器地址错误
+    SERVER_CLOSE,//视频服务器断开
+    SERVER_ERROR,//
+    SERVER_LOGIN_ERROR,//视频服务器登陆失败
+    SERVER_LOGINOUT,//视频服务器退出
+    SERVER_RECONNECT,//视频服务重新登陆
+} CONNECT_SERVER_ERROR; //登陆视频服务器错误
+
+typedef enum {
+    CONNECT_SERVER_OPENED,//视频服务器打开
+    CONNECT_SERVER_LOGIN,//视频服务器登录
+} CONNECT_SERVER_STATE;
+
+typedef enum {
+    CONNECT_VIDEO_STATE_ERROR,//视频服务器状态错误 ，本地状态错误
+    CONNECT_VIDEO_FAIL, //视频连接失败 call 服务器状态错误 是 error 状态
+    CONNECT_VIDEO_SERVER_ERROR, //视频服务错误，call 返回异常
+    CONNECT_VIDEO_HANGUP, //视频断开
+    CONNECT_VIDEO_BUDY, //对方正忙
+    CONNECT_VIDEO_OFFLINE, //布丁端不在线
+    CONNECT_VIDEO_PERMISSION,//没有绑定布丁
+    CONNECT_VIDEO_HALLON,//霍尔开关打开
+} CONNECT_VIDEO_ERROR; //视频连接错误
+
+
+typedef enum {
+    CONNECT_VIDEO_ACCEPT,//同意呼叫
+    CONNECT_VIDEO_ANSWER,//收到视频连接回复
+    CONNECT_VIDEO_INFO,//收到视频连接信息
+    CONNECT_VIDEO_BYE,//收到视频断开消息
+    CONNECT_VIDEO_SCUESS,//视频连接成功
+} CONNECT_VIDEO_STATE; 
+
+typedef enum {
+    RECORDER_VIDEO_STARTED,//开始录制视频
+    RECORDER_VIDEO_STOPED,//暂停录制视频
+    RECORDER_VIDEO_ERROR, //视频录制出错
+}RECORDER_VIDEO_STATE;
+
+
+typedef enum {
+    CAPTURE_VIDEO_SCUESS,//截屏成功
+    CAPTURE_VIDEO_ERROR, //截屏失败
+}CAPTURE_VIDEO_STATE;//视频截屏
 
 @protocol RBVideoEventDelegate <NSObject>
 
-- (void)videoConnectOnEvent:(VideoConnectState) event Code:(int)code Msg:(id)msg;
+/**
+ *  @author 智奎宇, 16-06-02 12:06:05
+ *
+ *  视频截图
+ *
+ *  @param state 截图状态
+ *  @param msg   信息
+ */
+- (void)captureVideo:(CAPTURE_VIDEO_STATE) state ResultImage:(UIImage *)captureImage Msg:(NSString *)msgInfo;
+/**
+ *  @author 智奎宇, 16-06-02 12:06:50
+ *
+ *  视频录制
+ *
+ *  @param state 视频录制状态
+ *  @param msg   信息
+ */
+- (void)recoredVideo:(RECORDER_VIDEO_STATE) state Msg:(id)msg;
+/**
+ *  @author 智奎宇, 16-06-02 12:06:55
+ *
+ *  登陆视频服务器错误
+ *
+ *  @param errorEvent 错误事件
+ *  @param msg        错误信息
+ */
+- (void)videoConnectServerError:(CONNECT_SERVER_ERROR)errorEvent Msg:(id)msg;
 
-- (void)videoConnectProgress:(int)progress;
+/**
+ *  @author 智奎宇, 16-06-02 12:06:39
+ *
+ *  视频服务器登陆状态
+ */
+- (void)videoConnectServer:(CONNECT_SERVER_STATE)state;
+/**
+ *  @author 智奎宇, 16-06-02 12:06:50
+ *
+ *  观看视频失败
+ *
+ *  @param errorEvent 错误类型
+ *  @param msg        错误信息
+ */
+- (void)videoConnectVideoError:(CONNECT_VIDEO_ERROR)errorEvent Msg:(id)msg;
 
+/**
+ *  @author 智奎宇, 16-06-02 12:06:17
+ *
+ *  视频连接状态
+ *
+ *  @param state    状态
+ *  @param progress 连接进度，参考进度，由4个状态评估
+ */
+- (void)videoConnectVideoState:(CONNECT_VIDEO_STATE)state DefaultProgress:(int)progress;
 @end
 
 
