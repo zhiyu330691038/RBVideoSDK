@@ -1,5 +1,5 @@
 PODS:
-  - RBVideoSDK (1.0.0)
+  - RBVideoSDK (1.1.0)
 
 DEPENDENCIES:
   - RBVideoSDK (from `../`)
@@ -9,6 +9,6 @@ EXTERNAL SOURCES:
     :path: ../
 
 SPEC CHECKSUMS:
-  RBVideoSDK: 617c853d94da26a861435c31f7d876df363c5d74
+  RBVideoSDK: 99c6f854a968bee74c3abbaafda360d1a3139dab
 
 COCOAPODS: 0.39.0
