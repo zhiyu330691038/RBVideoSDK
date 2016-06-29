@@ -20,10 +20,6 @@ TODO: 北京智能管家视频sdk.
   s.ios.deployment_target = '7.0'
 
   s.source_files = 'RBVideoSDK/Classes/**/*'
-
-  s.resource_bundles = {
-    'RBVideoSDK' => ['RBVideoSDK/Assets/*.*']
-  }
   s.vendored_libraries = 'RBVideoSDK/Assets/*.a'
   s.libraries = 'icucore','bz2','z','c++','iconv'
   s.frameworks = 'UIKit', 'MapKit','AVFoundation','AVKit','WebKit','AudioToolBox','MediaPlayer','OpenGLES','VideoToolBox','GLKit','SystemConfiguration','CoreMedia','CoreVideo','MobileCoreServices'
